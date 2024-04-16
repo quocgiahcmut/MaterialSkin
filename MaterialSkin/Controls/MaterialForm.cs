@@ -183,6 +183,8 @@ namespace MaterialSkin.Controls
         public enum FormStyles
         {
             StatusAndActionBar_None,
+            StatusNone_ActionBar_40,
+            StatusBar_36,
             ActionBar_None,
             ActionBar_40,
             ActionBar_48,
@@ -354,7 +356,7 @@ namespace MaterialSkin.Controls
         #region Constants
         // Form Constants
         private const int BORDER_WIDTH = 7;
-        private const int STATUS_BAR_BUTTON_WIDTH = 24;
+        private int STATUS_BAR_BUTTON_WIDTH = 24;
         private const int STATUS_BAR_HEIGHT_DEFAULT = 24;
         private const int ICON_SIZE = 24;
         private const int PADDING_MINIMUM = 3;
@@ -737,8 +739,16 @@ namespace MaterialSkin.Controls
         {
             switch (_formStyle)
             {
+                case FormStyles.StatusBar_36:
+                    ACTION_BAR_HEIGHT = 0;
+                    STATUS_BAR_HEIGHT = 36;
+                    break;
                 case FormStyles.StatusAndActionBar_None:
                     ACTION_BAR_HEIGHT = 0;
+                    STATUS_BAR_HEIGHT = 0;
+                    break;
+                case FormStyles.StatusNone_ActionBar_40:
+                    ACTION_BAR_HEIGHT = 40;
                     STATUS_BAR_HEIGHT = 0;
                     break;
                 case FormStyles.ActionBar_None:
@@ -766,6 +776,7 @@ namespace MaterialSkin.Controls
                     STATUS_BAR_HEIGHT = STATUS_BAR_HEIGHT_DEFAULT;
                     break;
             }
+            STATUS_BAR_BUTTON_WIDTH = STATUS_BAR_HEIGHT;
 
             Padding = new Padding(_drawerShowIconsWhenHidden ? drawerControl.MinWidth : PADDING_MINIMUM, STATUS_BAR_HEIGHT + ACTION_BAR_HEIGHT, Padding.Right, Padding.Bottom);
             originalPadding = Padding;
@@ -1116,6 +1127,15 @@ namespace MaterialSkin.Controls
                             _xButtonBounds.Y + (int)(_xButtonBounds.Height * 0.33),
                             _xButtonBounds.X + (int)(_xButtonBounds.Width * 0.33),
                             _xButtonBounds.Y + (int)(_xButtonBounds.Height * 0.66));
+                    }
+                }
+
+                if (_formStyle == FormStyles.StatusBar_36)
+                {
+                    using (NativeTextRenderer nativeTextRenderer = new NativeTextRenderer(g))
+                    {
+                        Rectangle rectangle = new Rectangle((DrawerTabControl != null) ? 72 : 16, 0, base.ClientSize.Width, STATUS_BAR_HEIGHT);
+                        nativeTextRenderer.DrawTransparentText(Text, SkinManager.getLogFontByType(MaterialSkinManager.fontType.H6), SkinManager.ColorScheme.TextColor, rectangle.Location, rectangle.Size, NativeTextRenderer.TextAlignFlags.Left | NativeTextRenderer.TextAlignFlags.Middle);
                     }
                 }
             }
